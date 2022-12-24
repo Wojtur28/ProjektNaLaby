@@ -31,3 +31,5 @@ A:\Projekty\Projekt\Projekt\obj\Debug\net7.0\refint\Projekt.dll
 A:\Projekty\Projekt\Projekt\obj\Debug\net7.0\Projekt.pdb
 A:\Projekty\Projekt\Projekt\obj\Debug\net7.0\Projekt.genruntimeconfig.cache
 A:\Projekty\Projekt\Projekt\obj\Debug\net7.0\ref\Projekt.dll
+A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\AutoMapper.dll
+A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
