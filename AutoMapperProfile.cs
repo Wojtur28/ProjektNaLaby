@@ -6,5 +6,6 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Game, GetGameDto>();
         CreateMap<AddGameDto, Game>();
+        CreateMap<UpdateGameDto, Game>();
     }
 }

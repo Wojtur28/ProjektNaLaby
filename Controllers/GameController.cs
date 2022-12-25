@@ -30,5 +30,26 @@ public class GameController : ControllerBase
     {
         return Ok(await _gameService.AddGame(newGame));
     }
+    
+    [HttpPut]
+    public async Task<ActionResult<ServiceResponse<List<GetGameDto>>>> UpdateGame(UpdateGameDto updateGame)
+    {
+        var response = await _gameService.UpdateGame(updateGame);
+        if (response.Data is null)
+        {
+            return NotFound(response);
+        }
+        return Ok(response);
+    }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ServiceResponse<GetGameDto>>> DeleteGame(int id)
+    {
+        var response = await _gameService.DeleteGame(id);
+        if (response.Data is null)
+        {
+            return NotFound(response);
+        }
+        return Ok(response);
+    }
 }
