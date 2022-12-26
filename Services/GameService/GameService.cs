@@ -1,35 +1,34 @@
 ﻿global using AutoMapper;
+using Projekt.Data;
 
 namespace Projekt.Services.GameService;
 
 public class GameService : IGameService
 {
-    private static List<Game> games = new List<Game>
-    {
-        new Game(),
-        new Game { Id = 1, Name = "GTA V" }
-    };
 
+    private readonly  DataContext _context;
     private readonly IMapper _mapper;
 
-    public GameService(IMapper mapper)
+    public GameService(IMapper mapper, DataContext context)
     {
+        _context = context;
         _mapper = mapper;
     }
     
+
     public async Task<ServiceResponse<List<GetGameDto>>> GetAllGames()
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
-        serviceResponse.Data = games.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
+        var dbGames = await _context.Games.ToListAsync();
+        serviceResponse.Data = dbGames.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
         return serviceResponse;
     }
 
     public async Task<ServiceResponse<GetGameDto>> GetGameById(int id)
     {
         var serviceResponse = new ServiceResponse<GetGameDto>();
-        
-        var game = games.FirstOrDefault(g => g.Id == id);
-        serviceResponse.Data = _mapper.Map<GetGameDto>(game);
+        var dbGame = await _context.Games.FirstOrDefaultAsync(c => c.Id == id);
+        serviceResponse.Data = _mapper.Map<GetGameDto>(dbGame);
         return serviceResponse;
     }
 
@@ -37,9 +36,13 @@ public class GameService : IGameService
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
         var game = _mapper.Map<Game>(newGame);
-        game.Id = games.Max(c => c.Id) + 1;
-        games.Add(game);
-        serviceResponse.Data = games.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
+
+       
+        _context.Games.Add(game);
+        await _context.SaveChangesAsync();
+
+        serviceResponse.Data =
+            await _context.Games.Select(c => _mapper.Map<GetGameDto>(c)).ToListAsync();
         return serviceResponse;
     }
 
@@ -50,7 +53,8 @@ public class GameService : IGameService
         try
         {
             
-            var game = games.FirstOrDefault(c => c.Id == updateGame.Id);
+            var game = 
+                await _context.Games.FirstOrDefaultAsync(c => c.Id == updateGame.Id);
             if(game is null)
                 throw new Exception($"Game with id {updateGame.Id} not found.");
             
@@ -58,6 +62,7 @@ public class GameService : IGameService
             game.ReleaseDate = updateGame.ReleaseDate;
             game.Category = updateGame.Category;
 
+            await _context.SaveChangesAsync();
             serviceResponse.Data = _mapper.Map<GetGameDto>(game);
         }
         catch (Exception ex)
@@ -76,13 +81,16 @@ public class GameService : IGameService
         try
         {
             
-            var game = games.FirstOrDefault(c => c.Id == id);
+            var game = await _context.Games.FirstOrDefaultAsync(c => c.Id == id);
             if(game is null)
                 throw new Exception($"Game with id {id} not found.");
             
-            games.Remove(game);
+            _context.Games.Remove(game);
 
-            serviceResponse.Data = games.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
+            await _context.SaveChangesAsync();
+
+            serviceResponse.Data = 
+                await _context.Games.Select(c => _mapper.Map<GetGameDto>(c)).ToListAsync();
         }
         catch (Exception ex)
         {
