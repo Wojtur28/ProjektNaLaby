@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Projekt.Data;
@@ -11,9 +12,11 @@ using Projekt.Data;
 namespace Projekt.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221227130044_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,12 +43,7 @@ namespace Projekt.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Games");
                 });
@@ -73,20 +71,6 @@ namespace Projekt.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Projekt.Models.Game", b =>
-                {
-                    b.HasOne("Projekt.Models.User", "User")
-                        .WithMany("Games")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Projekt.Models.User", b =>
-                {
-                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

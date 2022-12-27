@@ -9,4 +9,5 @@ public class DataContext : DbContext
     }
 
     public DbSet<Game> Games => Set<Game>();
+    public DbSet<User> Users => Set<User>();
 }
