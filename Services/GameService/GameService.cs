@@ -1,4 +1,5 @@
 ﻿global using AutoMapper;
+using System.Security.Claims;
 using Projekt.Data;
 
 namespace Projekt.Services.GameService;
@@ -8,18 +9,23 @@ public class GameService : IGameService
 
     private readonly  DataContext _context;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public GameService(IMapper mapper, DataContext context)
+    public GameService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
     {
+        _httpContextAccessor = httpContextAccessor;
         _context = context;
         _mapper = mapper;
     }
+    
+    private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext!.User
+        .FindFirstValue(ClaimTypes.NameIdentifier)!);
     
 
     public async Task<ServiceResponse<List<GetGameDto>>> GetAllGames()
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
-        var dbGames = await _context.Games.ToListAsync();
+        var dbGames = await _context.Games.Where(c => c.User!.Id == GetUserId()).ToListAsync();
         serviceResponse.Data = dbGames.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
         return serviceResponse;
     }
@@ -27,7 +33,8 @@ public class GameService : IGameService
     public async Task<ServiceResponse<GetGameDto>> GetGameById(int id)
     {
         var serviceResponse = new ServiceResponse<GetGameDto>();
-        var dbGame = await _context.Games.FirstOrDefaultAsync(c => c.Id == id);
+        var dbGame = await _context.Games
+            .FirstOrDefaultAsync(c => c.Id == id && c.User!.Id == GetUserId());
         serviceResponse.Data = _mapper.Map<GetGameDto>(dbGame);
         return serviceResponse;
     }
@@ -36,13 +43,16 @@ public class GameService : IGameService
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
         var game = _mapper.Map<Game>(newGame);
+        game.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == GetUserId());
 
        
         _context.Games.Add(game);
         await _context.SaveChangesAsync();
 
-        serviceResponse.Data =
-            await _context.Games.Select(c => _mapper.Map<GetGameDto>(c)).ToListAsync();
+        await _context.Games
+            .Where(c => c.User!.Id == GetUserId())
+            .Select(c => _mapper.Map<GetGameDto>(c))
+            .ToListAsync();
         return serviceResponse;
     }
 
@@ -54,8 +64,10 @@ public class GameService : IGameService
         {
             
             var game = 
-                await _context.Games.FirstOrDefaultAsync(c => c.Id == updateGame.Id);
-            if(game is null)
+                await _context.Games
+                    .Include(c => c.User)
+                    .FirstOrDefaultAsync(c => c.Id == updateGame.Id);
+            if (game is null || game.User!.Id != GetUserId())
                 throw new Exception($"Game with id {updateGame.Id} not found.");
             
             game.Name = updateGame.Name;
@@ -81,7 +93,8 @@ public class GameService : IGameService
         try
         {
             
-            var game = await _context.Games.FirstOrDefaultAsync(c => c.Id == id);
+            var game = await _context.Games
+                .FirstOrDefaultAsync(c => c.Id == id && c.User!.Id == GetUserId());
             if(game is null)
                 throw new Exception($"Game with id {id} not found.");
             
@@ -90,7 +103,9 @@ public class GameService : IGameService
             await _context.SaveChangesAsync();
 
             serviceResponse.Data = 
-                await _context.Games.Select(c => _mapper.Map<GetGameDto>(c)).ToListAsync();
+                await _context.Games
+                    .Where(c => c.User!.Id == GetUserId())
+                    .Select(c => _mapper.Map<GetGameDto>(c)).ToListAsync();
         }
         catch (Exception ex)
         {

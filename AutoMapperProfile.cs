@@ -1,4 +1,7 @@
-﻿namespace Projekt;
+﻿using Projekt.DTOS.Opinion;
+using Projekt.Migrations;
+
+namespace Projekt;
 
 public class AutoMapperProfile : Profile
 {
@@ -6,6 +9,8 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Game, GetGameDto>();
         CreateMap<AddGameDto, Game>();
-        CreateMap<UpdateGameDto, Game>();
+        CreateMap<Opinions, GetOpinionDto>();
+
+
     }
 }

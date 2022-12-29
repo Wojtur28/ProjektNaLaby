@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Projekt.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class GameController : ControllerBase
@@ -13,7 +16,7 @@ public class GameController : ControllerBase
         _gameService = gameService;
     }
     
-    [HttpGet("GetAll")]
+    [HttpGet]
     public async  Task<ActionResult<ServiceResponse<List<GetGameDto>>>> Get()
     {
         return Ok(await _gameService.GetAllGames());

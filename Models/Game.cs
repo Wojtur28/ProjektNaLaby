@@ -7,5 +7,6 @@ public class Game
     public DateTime ReleaseDate { get; set; } = new DateTime(2012, 8, 21);
     public Category Category { get; set; } = Category.FPS;
     public User? User { get; set; }
+    public Opinion? Opinion { get; set; }
 
 }

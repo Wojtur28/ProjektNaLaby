@@ -1,4 +1,6 @@
-﻿namespace Projekt.DTOS.Game;
+﻿using Projekt.DTOS.Opinion;
+
+namespace Projekt.DTOS.Game;
 
 public class GetGameDto
 {
@@ -6,4 +8,5 @@ public class GetGameDto
     public string Name { get; set; } = "CS:GO";
     public DateTime ReleaseDate { get; set; } = new DateTime(2012, 8, 21);
     public Category Category { get; set; } = Category.FPS;
+    public GetOpinionDto? Opinion { get; set; }
 }
