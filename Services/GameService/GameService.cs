@@ -25,8 +25,13 @@ public class GameService : IGameService
     public async Task<ServiceResponse<List<GetGameDto>>> GetAllGames()
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
-        var dbGames = await _context.Games.Where(c => c.User!.Id == GetUserId()).ToListAsync();
-        serviceResponse.Data = dbGames.Select(c => _mapper.Map<GetGameDto>(c)).ToList();
+        /*var dbGames = await _context.Games.Where(c => c.User!.Id == GetUserId()).ToListAsync();*/
+
+        var dbGames = await _context.Games
+            .Include(g => g.Opinion)
+            .Where(g => g.User!.Id == GetUserId())
+            .ToListAsync();
+        serviceResponse.Data = dbGames.Select(g => _mapper.Map<GetGameDto>(g)).ToList();
         return serviceResponse;
     }
 
@@ -34,7 +39,9 @@ public class GameService : IGameService
     {
         var serviceResponse = new ServiceResponse<GetGameDto>();
         var dbGame = await _context.Games
+            .Include(c => c.Opinion)
             .FirstOrDefaultAsync(c => c.Id == id && c.User!.Id == GetUserId());
+        
         serviceResponse.Data = _mapper.Map<GetGameDto>(dbGame);
         return serviceResponse;
     }

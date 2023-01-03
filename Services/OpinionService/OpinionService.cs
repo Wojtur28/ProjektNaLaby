@@ -24,8 +24,8 @@ public class OpinionService : IOpinionService
         try
         {
             var game = await _context.Games
-                .FirstOrDefaultAsync(g => g.Id == newOpinion.GameId && 
-                                          g.User!.Id == int.Parse(_httpContextAccessor.HttpContext!.User
+                .FirstOrDefaultAsync(c => c.Id == newOpinion.GameId && 
+                                          c.User!.Id == int.Parse(_httpContextAccessor.HttpContext!.User
                                               .FindFirstValue(ClaimTypes.NameIdentifier)!));
 
             if (game is null)
