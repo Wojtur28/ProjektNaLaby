@@ -7,7 +7,7 @@ namespace Projekt.Services.GameService;
 public class GameService : IGameService
 {
 
-    private readonly  DataContext _context;
+    private readonly DataContext _context;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -25,8 +25,6 @@ public class GameService : IGameService
     public async Task<ServiceResponse<List<GetGameDto>>> GetAllGames()
     {
         var serviceResponse = new ServiceResponse<List<GetGameDto>>();
-        /*var dbGames = await _context.Games.Where(c => c.User!.Id == GetUserId()).ToListAsync();*/
-
         var dbGames = await _context.Games
             .Include(g => g.Opinion)
             .Where(g => g.User!.Id == GetUserId())

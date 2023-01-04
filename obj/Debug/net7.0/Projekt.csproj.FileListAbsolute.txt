@@ -91,3 +91,4 @@ A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication
 A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\Scrutor.dll
 A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.dll
 A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+A:\Projekty\Projekt\Projekt\bin\Debug\net7.0\Projekt.postman_collection.json
