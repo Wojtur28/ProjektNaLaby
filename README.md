@@ -6,4 +6,4 @@ Dokumentacja WEB API w postaci filmu znajduje się pod tym linkiem: https://yout
 
 Dokumentacja przykładowych testów stworzona w POSTMAN znajduję się pod tym linkiem: https://youtu.be/H2i7o8V9TH0
 
-Plik JSON z testami znajduję się w pliku: Projekt.postman_collection.json
+Plik JSON z testami znajduję się pod nazwą: Projekt.postman_collection.json
